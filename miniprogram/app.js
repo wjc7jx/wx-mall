@@ -1,16 +1,16 @@
-// app.js
+import {toast,modal}from 'utils/extendApi'
+import instance from 'utils/request' 
 App({
-  onLaunch() {
-    
-
-    // 登录
-    wx.login({
-      success: res => {
-        // 发送 res.code 到后台换取 openId, sessionKey, unionId
-      }
+  async onLaunch(){
+    const res = await instance.request({
+      url: '/index/findBanner',
+      method: 'GET'
     })
-  },
-  globalData: {
-    userInfo: null
+    // console.log(res);
+    const res1=await instance.get(
+      '/index/findBanner'
+    )
+     console.log(res1);
+    
   }
 })
