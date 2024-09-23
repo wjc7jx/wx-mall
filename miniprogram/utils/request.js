@@ -1,8 +1,8 @@
 import { toast, modal } from './extendApi'
 
-class WxRequest {
+ class WxRequest {
   // 默认配置对象
-  static default = {
+  default = {
     baseURL: '', // 默认基础URL
     method: 'GET', // 默认请求方法
     header: {
@@ -28,7 +28,7 @@ class WxRequest {
    * @param {Object} params - 构造函数参数，用于覆盖默认配置
    */
   constructor(params = {}) {
-    WxRequest.default = { ...WxRequest.default, ...params };
+    this.default = { ...this.default, ...params };
   }
   // 封装处理并发请求的 all 方法
   all(...promise) {
@@ -43,14 +43,14 @@ class WxRequest {
     // 如果有新的请求，则清空上一次的定时器
     this.timerId && clearTimeout(this.timerId)
     // 拼接完整的URL
-    options.url = WxRequest.default.baseURL + options.url;
+    options.url = this.default.baseURL + options.url;
     // 合并默认配置和请求配置
-    const options = { ...WxRequest.default, ...options };
+    options = { ...this.default, ...options };
 
     // 在发送请求之前调用请求拦截器
     options = this.interceptors.request(options)
     // 若为空则调用显示loading，否则不调用
-    if(options.isLoading){
+    if (options.isLoading) {
       // 发送请求之前添加 loading
       this.queue.length === 0 && wx.showLoading()
       this.queue.push('requesting')
@@ -58,35 +58,66 @@ class WxRequest {
 
 
     return new Promise((resolve, reject) => {
-      wx.request({
-        ...options,
-        // 当接口调用成功时会触发 success 回调函数
-        success: (res) => {
-          // 不管接口成功还是失败，都需要调用响应拦截器
-          const mergeRes = Object.assign({}, res, { config: options, isSuccess: true })//在处理响应数据时，可能需要访问发送请求时使用的配置（例如，请求的 URL、方法、参数等），因此将配置对象添加到响应对象中
-          resolve(this.interceptors.response(mergeRes))
-        },
-        // 当接口调用失败时会触发 fail 回调函数
-        fail: (err) => {
-          // 不管接口成功还是失败，都需要调用响应拦截器
-          const mergeErr = Object.assign({}, err, { config: options, isSuccess: false })
-          // 不管接口成功还是失败，都需要调用响应拦截器
-          err = this.interceptors.response(mergeErr)
-          reject(err)
-        },
-        complete: () => {
+      if (options.method === 'UPLOAD') {
+        wx.uploadFile({
+          ...options,
 
-          if (!options.isLoading) return
-          // 接口调用完成后隐藏 loading
-          this.queue.pop()
-          // 当前没有请求进行，临时创建一个添加一个标识，添加定时器以确认在100ms内没有新的请求发起，然后便隐藏loading
-          this.queue.length === 0 && this.queue.push('request')
-          this.timerId = setTimeout(() => {
+          success: (res) => {
+            // 需要将服务器返回的 JSON 字符串 通过 JSON.parse 转成对象
+            res.data = JSON.parse(res.data)
+
+            // 合并参数
+            const mergeRes = Object.assign({}, res, {
+              config: options,
+              isSuccess: true
+            })
+
+            resolve(this.interceptors.response(mergeRes))
+          },
+
+          fail: (err) => {
+            // 合并参数
+            const mergeErr = Object.assign({}, err, {
+              config: options,
+              isSuccess: false
+            })
+
+            reject(this.interceptors.response(mergeErr))
+          }
+        })
+      }
+      else {
+        wx.request({
+          ...options,
+          // 当接口调用成功时会触发 success 回调函数
+          success: (res) => {
+            // 不管接口成功还是失败，都需要调用响应拦截器
+            const mergeRes = Object.assign({}, res, { config: options, isSuccess: true })//在处理响应数据时，可能需要访问发送请求时使用的配置（例如，请求的 URL、方法、参数等），因此将配置对象添加到响应对象中
+            resolve(this.interceptors.response(mergeRes))
+          },
+          // 当接口调用失败时会触发 fail 回调函数
+          fail: (err) => {
+            // 不管接口成功还是失败，都需要调用响应拦截器
+            const mergeErr = Object.assign({}, err, { config: options, isSuccess: false })
+            // 不管接口成功还是失败，都需要调用响应拦截器
+            err = this.interceptors.response(mergeErr)
+            reject(err)
+          },
+          complete: () => {
+
+            if (!options.isLoading) return
+            // 接口调用完成后隐藏 loading
             this.queue.pop()
-            this.queue.length === 0 && wx.hideLoading()
-          }, 100)
-        }
-      })
+            // 当前没有请求进行，临时创建一个添加一个标识，添加定时器以确认在100ms内没有新的请求发起，然后便隐藏loading
+            this.queue.length === 0 && this.queue.push('request')
+            this.timerId = setTimeout(() => {
+              this.queue.pop()
+              this.queue.length === 0 && wx.hideLoading()
+            }, 100)
+          }
+        })
+      }
+
     })
   }
 
@@ -131,67 +162,5 @@ class WxRequest {
   // 其他方法(post, put, delete)保持不变...
 }
 
-// 创建WxRequest实例，并传递基础配置
-const instance = new WxRequest({
-  baseURL: 'https://gmall-prod.atguigu.cn/mall-api', // 设置基础URL
-});
-
-// 配置请求拦截器
-instance.interceptors.request = (config) => {
-  // 从本地获取 token
-  if (wx.getStorageSync('token')) {
-    // 如果存在 token ，则添加请求头
-    config.header['token'] = wx.getStorageSync('token')
-  }
-
-  // 返回请求参数
-  return config
-}
-
-// 响应拦截器
-instance.interceptors.response = async (response) => {
-  const { data, isSuccess } = response
-  if (!isSuccess) {
-    if (!isSuccess) {
-      toast({
-        title: '网络异常请重试',
-        icon: 'error'
-      })
-      // 抛出异常
-      return Promise.reject(response)
-    }
-  }
-  // 网络正常
-  switch (data.code) {
-    case 200:
-      // 接口调用成功，服务器成功返回了数据，只需要将数据简化以后返回即可
-      return data
-
-    case 208:
-      const res = await modal({
-        content: '鉴权失败，请重新登录',
-        showCancel: false
-      })
-
-      if (res) {
-        // 既然用户需要重新进行登录，就需要把之前用户存储的信息(过期的 token) 进行清除
-        // clearStorage()
-        wx.clearStorageSync()
-
-        wx.navigateTo({
-          url: '/pages/login/login'
-        })
-      }
-
-
-    default:
-      toast({
-        title: '程序出现异常，请联系客服或稍后重试！'
-      })
-      return Promise.reject(response)
-  }
-}
-
-
-export default instance;
+export default WxRequest
 

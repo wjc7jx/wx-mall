@@ -31,11 +31,11 @@ export const getStorage = (key) => {
  * @param {*} key 
  */
 export const removeStorage = (key) => {
-   try {
-     wx.removeStorageSync(key)
-   } catch (err) {
-     console.error(`移除指定 ${key} 数据发生错误:`, e)
-   }
+  try {
+    wx.removeStorageSync(key)
+  } catch (err) {
+    console.error(`移除指定 ${key} 数据发生错误:`, e)
+  }
 }
 
 /**
