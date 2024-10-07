@@ -1,7 +1,7 @@
 // 引入腾讯地图微信小程序JS SDK
-import QQMapWX from '../../../../../libs/qqmap-wx-jssdk.min'
+import QQMapWX from '@/libs/qqmap-wx-jssdk.min'
 import Schema from 'async-validator'
-import { reqAddAddress,reqUpdateAddress ,reqAddressInfo} from '../../../../../api/address'
+import { reqAddAddress,reqUpdateAddress ,reqAddressInfo} from '@/api/address'
 // 定义页面
 Page({
 

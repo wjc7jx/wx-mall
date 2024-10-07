@@ -1,7 +1,7 @@
-import { reqLogin,reqUserInfo } from '../../api/user'
-import { toast } from '../../utils/extendApi'
-import {userStore} from '../../store/index'
-import {setStorage}from '../../utils/storage'
+import { reqLogin,reqUserInfo } from '@/api/user'
+import { toast } from '@/utils/extendApi'
+import {userStore} from '@/store/index'
+import {setStorage}from '@/utils/storage'
 import { ComponentWithStore } from 'mobx-miniprogram-bindings'
 
 

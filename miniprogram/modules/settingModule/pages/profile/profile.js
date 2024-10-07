@@ -1,6 +1,6 @@
 // pages/profile/profile.js
 import {userBehavior}from './behavior'
-import {reqUploadFile,reqUpdateUserInfo}from '../../../../api/user'
+import {reqUploadFile,reqUpdateUserInfo}from '@/api/user'
 Page({
   // 页面的初始数据
   behaviors:[userBehavior],

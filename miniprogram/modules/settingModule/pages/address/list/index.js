@@ -1,5 +1,5 @@
 // pages/address/list/index.js'
-import { reqAddressList,reqDelAddress } from '../../../../../api/address'
+import { reqAddressList,reqDelAddress } from '@/api/address'
 
 Page({
   // 页面的初始数据

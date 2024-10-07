@@ -1,6 +1,6 @@
 // pages/info/info.js  
 import { ComponentWithStore } from 'mobx-miniprogram-bindings';  
-import { userStore } from '../../store/index';  
+import { userStore } from '@/store/index';  
   
 ComponentWithStore({  
   storeBindings: {  
