@@ -3,7 +3,7 @@
     <text>头像</text>
 
     <view class="avatar">
-      <button hover-class="none">
+      <button hover-class="none" open-type="chooseAvatar" bindchooseavatar="chooseAvatar">
         <image src="{{ userInfo.headimgurl || '/assets/images/avatar.png' }}" />
       </button>
     </view>
@@ -15,7 +15,7 @@
   </view>
 
   <view class="footer">
-    <view class="btn">保存</view>
+    <view class="btn" bindtap="updateUserInfo">保存</view>
   </view>
 
   <van-dialog
@@ -27,11 +27,11 @@
     showCancelButton="{{ false }}"
     transition="fade"
   >
-    <form>
-      <input class="input-name" value="{{ userInfo.nickname }}" />
+    <form bindsubmit="getNewName">
+      <input class="input-name" value="{{ userInfo.nickname }}"  type="nickname" name="nickname" />
       <view class="dialog-content">
-        <button class="cancel" bindtap="cancelForm">取消</button>
-        <button class="confirm" type="primary">确定</button>
+        <button class="cancel" bindtap="cancelForm" form-type="reset">取消</button>
+        <button class="confirm" type="primary"  form-type="submit" >确定</button>
       </view>
     </form>
   </van-dialog>

@@ -9,9 +9,6 @@ Component({
     bannerList: {
       type: Array,
       value: [
-        '../../../assets/banner/banner-1.jpg',
-        '../../../assets/banner/banner-2.jpg',
-        '../../../assets/banner/banner-3.jpg'
       ]
     }
   },
@@ -19,10 +16,19 @@ Component({
   /**
    * 组件的初始数据
    */
-  data: {},
+  data: {
+    activeIndex:0
+  },
 
   /**
    * 组件的方法列表
    */
-  methods: {}
+  methods: {
+    getSwiperIndex(event){
+       const { current } = event.detail
+       this.setData({
+         activeIndex: current
+       })
+     }
+  }
 })

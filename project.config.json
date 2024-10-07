@@ -1,10 +1,6 @@
 {
   "compileType": "miniprogram",
   "libVersion": "trial",
-  "packOptions": {
-    "ignore": [],
-    "include": []
-  },
   "miniprogramRoot": "miniprogram/",
   "setting": {
     "packNpmManually": true,
@@ -27,13 +23,18 @@
       "ignore": [],
       "disablePlugins": [],
       "outputPath": ""
-    }
+    },
+    "ignoreUploadUnusedFiles": true
   },
   "condition": {},
   "editorSetting": {
     "tabIndent": "auto",
     "tabSize": 2
   },
+  "srcMiniprogramRoot": "package.json/",
   "appid": "wxb1b746d0b613e066",
-  "srcMiniprogramRoot": "package.json/"
+  "packOptions": {
+    "ignore": [],
+    "include": []
+  }
 }
