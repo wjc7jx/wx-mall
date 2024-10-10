@@ -9,6 +9,20 @@
     "miniprogram": {
       "list": [
         {
+          "name": "购物车",
+          "pathName": "pages/cart/cart",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "购买详情",
+          "pathName": "modules/goodModule/pages/goods/detail/detail",
+          "query": "goodsId=7",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
           "name": "地址",
           "pathName": "modules/settingModule/pages/address/list/index",
           "query": "",

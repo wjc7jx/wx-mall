@@ -1,12 +1,13 @@
 // pages/address/list/index.js'
 import { reqAddressList,reqDelAddress } from '@/api/address'
+import {swipeCellBehavior} from '@/behaviors/swipeCellBehavior'
 
 Page({
   // 页面的初始数据
   data: {
     addressList: [],
-    openedSwipCellId:null
   },
+  behaviors:[swipeCellBehavior],
   // 获取收货地址
   async getAddressList() {
     // 调用 API，获取收货地址
@@ -29,23 +30,7 @@ Page({
     await reqDelAddress(id)
     this.getAddressList()
   },
-// 1.打开滑块时，将实例存储到队列中
-onSwipeCellOpen(e){
-  console.log(e)
-  
-  this.setData({
-    openedSwipCellId:e.target.id
-  })
-  console.log(this.data.openedSwipCellId)
-},
-//2.点击页面时，关掉开启的滑块
-onSwipeCellClose() {
-  this.selectComponent(`#${this.data.openedSwipCellId}`).close()
-    // 将存储打开的滑块清空
-  this.setData({
-    openedSwipCellId:null
-  })
-},
+
 
   onShow(){
     this.getAddressList()
